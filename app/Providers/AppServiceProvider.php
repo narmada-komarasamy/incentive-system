@@ -13,7 +13,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        //Using contextual binding to bind the needed incentive module based on request received
+        $this->app->when(IncentivesController::class)
+        ->needs(IncentivesInterfaceModule::class)
+        ->give(function () {
+            return request()->incentiveId === '1'
+                ? $this->app->get(IncentiveEvent1Module::class)
+                : $this->app->get(IncentiveEvent2Module::class);
+        });
+
     }
 
     /**
